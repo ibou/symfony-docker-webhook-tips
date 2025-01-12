@@ -13,25 +13,25 @@ jobs:
         with:
           php-version: 8.3
           tools: composer:v2
-      
-      - name: Setup cache
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-      - name: Cache with composer
+      - name: Setup Cache
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+        
+      - name: Caching deps
         uses: actions/cache@v4
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
           key: php8.3-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             php8.3-composer-latest-
-      
+
       - name: Update composer
         run: composer self-update
 
-      - name: Install 
+      - name: install deps
         run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Security Audit
+      - name: security audit
         run: |
           composer audit \
             --no-dev \
@@ -42,10 +42,9 @@ jobs:
             --no-ansi \
             > /tmp/security-audit.json
 
-      - name: Upload audit
+      - name: upload security audit report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: security-audit
-          path: /tmp/security-audit.json     
-          
+          path: /tmp/security-audit.json                        
