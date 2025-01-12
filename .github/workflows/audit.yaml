@@ -1,0 +1,50 @@
+name: Security Audit
+on: [push, pull_request]
+jobs:
+  audit:
+    name: Security Audit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+      
+      - name: Setup Cache
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GIHUB_ENV
+
+      - name: Cache with composer
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php8.3-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php8.3-composer-latest-
+      
+      - name: Update composer
+        run: composer self-update
+
+      - name: Install 
+        run: composer install --prefer-dist --on-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: Security Audit
+        run: |
+          composer audit \
+            --no-dev \
+            --abandoned="report" \
+            --ignore-severity="low" \
+            --ignore-severity="medium" \
+            --format="json" \
+            --no-ansi \
+            > /tmp/security-audit.json
+
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit
+          path: /tmp/security-audit.json     
+          
