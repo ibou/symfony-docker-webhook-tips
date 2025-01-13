@@ -2,30 +2,21 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
+use PhpCsFixer\Fixer\Operator\ConcatSpaceFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
+use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
+use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
-return ECSConfig::configure()
-    ->withPaths([
-        __DIR__ . '/assets',
-        __DIR__ . '/config',
-        __DIR__ . '/public',
+return static function (ECSConfig $ecsConfig): void {
+    $ecsConfig->paths([
         __DIR__ . '/src',
-        __DIR__ . '/tests',
-    ])
+        __DIR__ . '/tests'
+    ]);
 
-    // add a single rule
-    ->withRules([
-        NoUnusedImportsFixer::class,
-    ])
-
-    // add sets - group of rules
-   // ->withPreparedSets(
-        // arrays: true,
-        // namespaces: true,
-        // spaces: true,
-        // docblocks: true,
-        // comments: true,
-    // )
-     
-     ;
+    $ecsConfig->sets([
+        SetList::PSR_12,
+        SetList::COMMON,
+        SetList::CLEAN_CODE,
+    ]);
+    $ecsConfig->services()->remove(id: ConcatSpaceFixer::class);
+};
