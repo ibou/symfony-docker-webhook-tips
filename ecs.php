@@ -7,16 +7,12 @@ use Symplify\EasyCodingStandard\Config\ECSConfig;
 use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
-return static function (ECSConfig $ecsConfig): void {
-    $ecsConfig->paths([
+return ECSConfig::configure()
+    ->withPaths([
         __DIR__ . '/src',
         __DIR__ . '/tests'
+    ])
+    ->withPreparedSets(true)
+    ->withSkip([
+        ConcatSpaceFixer::class
     ]);
-
-    $ecsConfig->sets([
-        SetList::PSR_12,
-        SetList::COMMON,
-        SetList::CLEAN_CODE,
-    ]);
-    $ecsConfig->services()->remove(id: ConcatSpaceFixer::class);
-};
