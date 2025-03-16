@@ -11,7 +11,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           tools: composer:v2
 
       - name: Setup Cache
@@ -21,9 +21,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php8.3-composer-${{ hashFiles('**/composer.json') }}
+          key: php8.4-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            php8.3-composer-latest-
+            php8.4-composer-latest-
 
       - name: Update composer
         run: composer self-update
