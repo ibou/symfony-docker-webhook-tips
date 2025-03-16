@@ -1,6 +1,6 @@
 services:
   php:
-    user: '${USER_ID}:${GROUP_ID}'
+    user: "${USER_ID}:${GROUP_ID}"
     build: ./docker/php
     volumes:
       - .:/var/www:delegated
@@ -12,7 +12,7 @@ services:
   nginx:
     build: ./docker/nginx
     ports:
-     - "8000:80"
+     - "8002:80"
     volumes:
       - ./public:/var/www/public:delegated
     depends_on:
