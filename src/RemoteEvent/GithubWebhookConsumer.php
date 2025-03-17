@@ -9,30 +9,30 @@ use Symfony\Component\RemoteEvent\Attribute\AsRemoteEventConsumer;
 use Symfony\Component\RemoteEvent\Consumer\ConsumerInterface;
 use Symfony\Component\RemoteEvent\RemoteEvent;
 use TelegramBot\Api\BotApi;
+use Throwable;
 
 #[AsRemoteEventConsumer('github')]
 final class GithubWebhookConsumer implements ConsumerInterface
 {
     public function __construct(
-        private readonly BotApi $api,
+        private readonly BotApi          $api,
         private readonly LoggerInterface $logger
-    )
-    {
+    ) {
     }
 
     public function consume(RemoteEvent $event): void
     {
-        $name  = $event->getName();
+        $name = $event->getName();
 
         $this->logger->info("debugging event ..... : $name");
         try {
             match (true) {
                 $name === 'push' => $this->handlePushEvent($event),
                 $name === 'ping' => $this->handlePingEvent($event),
-                $name === 'star' =>  $this->handleStarEvent($event),
+                $name === 'star' => $this->handleStarEvent($event),
                 default => null,
             };
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logger->error($e->getMessage());
         }
     }
@@ -54,6 +54,18 @@ final class GithubWebhookConsumer implements ConsumerInterface
         );
 
         $this->sendMessage($message);
+    }
+
+    private function sendMessage(?string $message = null): void
+    {
+        if ($message !== null) {
+            $this->api->sendMessage(
+                chatId: '7499578535',
+                text: $message,
+                parseMode: 'markdown',
+                disablePreview: true,
+            );
+        }
     }
 
     private function handlePingEvent(RemoteEvent $event): void
@@ -78,17 +90,4 @@ final class GithubWebhookConsumer implements ConsumerInterface
         };
         $this->sendMessage($message);
     }
-
-    private function sendMessage(?string $message = null): void
-    {
-        if ($message !== null) {
-            $this->api->sendMessage(
-                chatId: '7499578535',
-                text: $message,
-                parseMode: 'markdown',
-                disablePreview: true,
-            );
-        }
-    }
-
 }

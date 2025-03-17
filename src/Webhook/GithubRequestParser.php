@@ -27,7 +27,8 @@ final class GithubRequestParser extends AbstractRequestParser
 
     protected function doParse(
         Request $request,
-        #[\SensitiveParameter] string $secret
+        #[\SensitiveParameter]
+        string $secret
     ): ?RemoteEvent {
         $this->validateSignature(
             headers: $request->headers,
@@ -50,13 +51,15 @@ final class GithubRequestParser extends AbstractRequestParser
     }
 
     private function validateSignature(
-        HeaderBag $headers, string $body,
-        #[\SensitiveParameter] string $secret
+        HeaderBag $headers,
+        string $body,
+        #[\SensitiveParameter]
+        string $secret
     ): void {
-        $signature = hash_hmac('sha256', $body, $secret);
-//
-//        if (!hash_equals($signature, $headers->get('X-Hub-Signature-256'))) {
-//             throw new RejectWebhookException(406, 'Invalid signature.');
-//        }
+        // $signature = hash_hmac('sha256', $body, $secret);
+        //
+        //        if (!hash_equals($signature, $headers->get('X-Hub-Signature-256'))) {
+        //             throw new RejectWebhookException(406, 'Invalid signature.');
+        //        }
     }
 }
