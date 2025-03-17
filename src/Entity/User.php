@@ -17,7 +17,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    public ?int $id = null {
+        get {
+        return $this->id;
+    }
+    }
 
     #[ORM\Column(length: 180)]
     private ?string $email = null;
@@ -36,11 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getEmail(): ?string
     {
@@ -77,11 +76,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
+
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        // array_unique conserve les clés → array_values les réindexe en liste propre
+        return array_values(array_unique($roles));
     }
+
 
     /**
      * @param list<string> $roles

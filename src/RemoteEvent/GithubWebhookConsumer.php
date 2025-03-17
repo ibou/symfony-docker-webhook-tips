@@ -48,7 +48,7 @@ final class GithubWebhookConsumer implements ConsumerInterface
 
         $message = vsprintf(
             format: $commit === '00000000' ?
-                '🔥 %s deleted %s on %s' :
+                '🔥 %s deleted %s on %s : %s' :
                 '🔥 %s pushed %s on %s : %s',
             values: [$pusher, $ref, $project, $description]
         );

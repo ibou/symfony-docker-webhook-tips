@@ -69,7 +69,7 @@ final class UserControllerTest extends WebTestCase
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->id));
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('User');
@@ -88,7 +88,7 @@ final class UserControllerTest extends WebTestCase
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s/%s/edit', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s/%s/edit', $this->path, $fixture->id));
 
         $this->client->submitForm('Update', [
             'user[email]' => 'test+1@test.com',
@@ -118,7 +118,7 @@ final class UserControllerTest extends WebTestCase
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->id));
         $this->client->submitForm('Delete');
 
         self::assertResponseRedirects('/user');
