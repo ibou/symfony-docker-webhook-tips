@@ -35,9 +35,16 @@ final class GithubRequestParser extends AbstractRequestParser
             secret: $secret
         );
 
+        $name = $request->headers->get('X-GitHub-Event');
+        $id = $request->headers->get('X-GitHub-Hook-ID');
+
+        if (null === $name || null === $id) {
+            throw new RejectWebhookException(400, 'Missing required GitHub headers.');
+        }
+
         return new RemoteEvent(
-            name: $request->headers->get('X-GitHub-Event'),
-            id: $request->headers->get('X-GitHub-Hook-ID'),
+            name: $name,
+            id: $id,
             payload: $request->getPayload()->all()
         );
     }
@@ -47,9 +54,9 @@ final class GithubRequestParser extends AbstractRequestParser
         #[\SensitiveParameter] string $secret
     ): void {
         $signature = hash_hmac('sha256', $body, $secret);
-
-        if (!hash_equals($signature, $headers->get('X-Hub-Signature-256'))) {
-            //throw new RejectWebhookException(406, 'Invalid signature.');
-        }
+//
+//        if (!hash_equals($signature, $headers->get('X-Hub-Signature-256'))) {
+//             throw new RejectWebhookException(406, 'Invalid signature.');
+//        }
     }
 }
