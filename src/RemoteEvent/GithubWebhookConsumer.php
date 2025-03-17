@@ -12,11 +12,11 @@ use TelegramBot\Api\BotApi;
 use Throwable;
 
 #[AsRemoteEventConsumer('github')]
-final class GithubWebhookConsumer implements ConsumerInterface
+final readonly class GithubWebhookConsumer implements ConsumerInterface
 {
     public function __construct(
-        private readonly BotApi          $api,
-        private readonly LoggerInterface $logger
+        private BotApi          $api,
+        private LoggerInterface $logger
     ) {
     }
 
